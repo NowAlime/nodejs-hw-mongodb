@@ -7,7 +7,7 @@ import initMongoConnection from '../src/db/initMongoConnection.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8009;
+const PORT = process.env.PORT || 3001;
 
 const setupServer = async () => {
   try {
