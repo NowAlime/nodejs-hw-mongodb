@@ -1,13 +1,11 @@
 import dotenv from 'dotenv';
-import { config } from 'dotenv';
 
-config();
+dotenv.config();
 
-export const env = (key) => {
-  if (!process.env[key]) {
-    throw new Error(`Missing: process.env['${key}']`);
-  }
-  return process.env[key];
+const env = (name, defaultValues) => {
+  const value = process.env[name];
+  if (value) return value;
+  if (defaultValues) return defaultValues;
+  throw new Error(`Missing: process.env['${name}']`);
 };
-
-
+export default env;
