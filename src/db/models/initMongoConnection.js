@@ -8,7 +8,7 @@ const initMongoConnection = async () => {
     const url = env('MONGODB_URL');
     const db = env('MONGODB_DB');
     await mongoose.connect(
-      `mongodb+srv://${user}:${pwd}@${url}/${db}?home-work-node.gngypzk.mongodb.net/`,
+      `mongodb+srv://${user}:${pwd}@${url}/${db}retryWrites=true&w=majority&appName=home-work-node`,
     );
     console.log('Mongo connection successfully established!');
   } catch (error) {
