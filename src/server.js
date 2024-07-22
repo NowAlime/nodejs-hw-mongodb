@@ -3,17 +3,14 @@ import cors from 'cors';
 import pino from 'pino-http';
 import dotenv from 'dotenv';
 import { getAllContacts, getContactById } from './services/contacts.js';
-import initMongoConnection from '../src/db/initMongoConnection.js'; 
+import initMongoConnection from './db/initMongoConnection.js'; 
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3008;
 
 const setupServer = async () => {
   try {
-
-    await initMongoConnection();
-
     const app = express();
 
     app.use(cors());
@@ -77,5 +74,7 @@ const setupServer = async () => {
     console.error('Error initializing server:', error);
   }
 };
+
+console.log(typeof setupServer);  
 
 export default setupServer; 
