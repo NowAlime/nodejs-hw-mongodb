@@ -8,7 +8,7 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3008;
+const PORT = process.env.PORT || 8090;
 
 const setupServer = async () => {
   try {
