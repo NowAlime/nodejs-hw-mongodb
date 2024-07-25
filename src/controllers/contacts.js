@@ -36,23 +36,24 @@ export const patchContactByIdController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const contact = await updateContact(contactId, req.body);
+
     if (!contact) {
       next(createHttpError(404, 'Contact not found'));
       return;
     }
+
     res.json({
       status: 200,
-      message: 'Successfully patched a contact!',
+      message: 'Successfully updated the contact!',
       data: contact,
     });
   } catch (error) {
     next(error);
   }
 };
-
 export const postContactController = async (req, res, next) => {
   try {
-    const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+    const { name, phoneNumber, email, isFavourite = false, contactType } = req.body;
     if (!name || !phoneNumber || !contactType) {
       return next(createHttpError(400, 'Name, phone number and contact type are required'));
     }
