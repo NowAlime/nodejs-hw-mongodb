@@ -7,6 +7,7 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
+
 export const getAllContactsController = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
@@ -110,3 +111,4 @@ export const patchContactByIdController = async (req, res, next) => {
     next(error);
   }
 };
+
