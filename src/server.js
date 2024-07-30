@@ -6,6 +6,7 @@ import initMongoConnection from './db/initMongoConnection.js';
 import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
+import User from './models/user.js';
 
 dotenv.config();
 
@@ -27,7 +28,7 @@ const setupServer = async () => {
       console.log(`Time: ${new Date().toLocaleString()}`);
       next();
     });
-    
+
     app.use(notFoundHandler);
     app.use(errorHandler);
 
@@ -39,4 +40,21 @@ const setupServer = async () => {
   }
 };
 
-export default setupServer;
+setupServer();
+
+
+const createUser = async () => {
+  try {
+    const newUser = new User({
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: 'securepassword'
+    });
+    await newUser.save();
+    console.log('User created successfully');
+  } catch (error) {
+    console.error('Error creating user:', error.message);
+  }
+};
+
+createUser();
