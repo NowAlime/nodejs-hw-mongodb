@@ -6,17 +6,14 @@ import initMongoConnection from './db/initMongoConnection.js';
 import contactsRouter from './routers/contacts.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
-import User from './models/user.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3006;
+const PORT = process.env.PORT || 4008;
 
-const setupServer = async () => {
+const setupServer = async (app) => {
   try {
     await initMongoConnection();
-
-    const app = express();
 
     app.use(cors());
     app.use(express.json());
@@ -40,21 +37,7 @@ const setupServer = async () => {
   }
 };
 
-setupServer();
+export default setupServer;
 
 
-const createUser = async () => {
-  try {
-    const newUser = new User({
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      password: 'securepassword'
-    });
-    await newUser.save();
-    console.log('User created successfully');
-  } catch (error) {
-    console.error('Error creating user:', error.message);
-  }
-};
 
-createUser();

@@ -1,12 +1,11 @@
 import { 
-  getAllContacts, 
-  getContactById, 
-  updateContactById, 
-  createContact, 
-  deleteContact 
+  getAllContacts as getAllContactsService, 
+  getContactById as getContactByIdService, 
+  updateContactById as updateContactByIdService, 
+  createContact as createContactService, 
+  deleteContact as deleteContactService 
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
-
 
 export const getAllContactsController = async (req, res, next) => {
   try {
@@ -21,7 +20,7 @@ export const getAllContactsController = async (req, res, next) => {
     if (type) filters.type = type;
     if (isFavourite !== undefined) filters.isFavourite = isFavourite;
 
-    const { contacts, totalItems } = await getAllContacts(page, perPage, sortBy, sortOrder, filters);
+    const { contacts, totalItems } = await getAllContactsService(page, perPage, sortBy, sortOrder, filters);
     const totalPages = Math.ceil(totalItems / perPage);
     const hasPreviousPage = page > 1;
     const hasNextPage = page < totalPages;
@@ -47,7 +46,7 @@ export const getAllContactsController = async (req, res, next) => {
 export const getContactByIdController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const contact = await getContactById(contactId);
+    const contact = await getContactByIdService(contactId);
     if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
@@ -67,7 +66,7 @@ export const postContactController = async (req, res, next) => {
     if (!name || !phoneNumber || !contactType) {
       return next(createHttpError(400, 'Name, phone number, and contact type are required'));
     }
-    const contact = await createContact({ name, phoneNumber, email, isFavourite, contactType });
+    const contact = await createContactService({ name, phoneNumber, email, isFavourite, contactType });
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
@@ -81,11 +80,11 @@ export const postContactController = async (req, res, next) => {
 export const deleteContactByIdController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const contact = await deleteContact(contactId);
+    const contact = await deleteContactService(contactId);
     if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
-    res.status(204).json();  
+    res.status(204).send();  
   } catch (error) {
     next(error);
   }
@@ -96,7 +95,7 @@ export const patchContactByIdController = async (req, res, next) => {
     const { contactId } = req.params;
     const update = req.body;
 
-    const updatedContact = await updateContactById(contactId, update);
+    const updatedContact = await updateContactByIdService(contactId, update);
 
     if (!updatedContact) {
       return next(createHttpError(404, 'Contact not found'));
@@ -111,4 +110,3 @@ export const patchContactByIdController = async (req, res, next) => {
     next(error);
   }
 };
-
