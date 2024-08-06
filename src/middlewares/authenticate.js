@@ -1,29 +1,26 @@
-import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
+import jwt from 'jsonwebtoken';
 import User from '../db/models/user.js';
+import Session from '../db/models/session.js';
 
 const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createHttpError(401, 'Missing or invalid Authorization header');
+
+    if (!authHeader) {
+      throw createHttpError(401, 'No token provided');
     }
 
     const token = authHeader.split(' ')[1];
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET);
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const session = await Session.findOne({ userId, accessToken: token });
 
-    const user = await User.findById(decoded.userId);
-    if (!user) {
-      throw createHttpError(401, 'User not found');
-    }
-
-    if (new Date() > new Date(user.accessTokenValidUntil)) {
+    if (!session || new Date() > session.accessTokenValidUntil) {
       throw createHttpError(401, 'Access token expired');
     }
 
-    req.user = user;
-
+    req.user = await User.findById(userId);
     next();
   } catch (error) {
     next(error);

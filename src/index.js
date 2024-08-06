@@ -1,28 +1,38 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import setupServer from './server.js';
-import initMongoConnection from './db/initMongoConnection.js';
-import authRouter from './routers/auth.js';
+import mongoose from 'mongoose';
+import User from './db/models/user.js';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
-const startServer = async () => {
+const app = express();
+const PORT = process.env.PORT || 4010;
+
+const createUser = async () => {
   try {
-    await initMongoConnection();
-
-    const app = express();
-    app.use(express.json());  
-    app.use('/api/auth', authRouter);  
-
-    setupServer(app);  
-
-    app.listen(process.env.PORT || 4008, () => {
-      console.log(`Server is running on port ${process.env.PORT || 4008}`);
+    await mongoose.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
+
+    const hashedPassword = await bcrypt.hash('securepassword', 10);
+    const newUser = new User({
+      name: 'Jo Do',
+      email: 'jodo@example.com',
+      password: hashedPassword,
+    });
+    await newUser.save();
+    console.log('User created successfully');
   } catch (error) {
-    console.error('Error initializing MongoDB connection', error);
-    process.exit(1);
+    console.error('Error creating user:', error.message);
+  } finally {
+    mongoose.connection.close();
   }
 };
 
-startServer();
+createUser();
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

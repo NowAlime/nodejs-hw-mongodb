@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    lowercase: true
   },
   password: {
     type: String,
@@ -25,12 +25,9 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-
 userSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-const User = mongoose.model('User', userSchema);
-
-export default User;
+export default mongoose.model('User', userSchema);

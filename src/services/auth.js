@@ -4,6 +4,19 @@ import createHttpError from 'http-errors';
 import User from '../db/models/user.js';
 import Session from '../db/models/session.js';
 
+export const registerUserService = async (email, password, name) => {
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw createHttpError(409, 'Email already in use');
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({ email, password: hashedPassword, name });
+  await newUser.save();
+
+  return newUser;
+};
+
 export const loginUserService = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) {
@@ -25,7 +38,7 @@ export const loginUserService = async (email, password) => {
     accessToken,
     refreshToken,
     accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   }).save();
 
   return { accessToken, refreshToken };
@@ -34,7 +47,7 @@ export const loginUserService = async (email, password) => {
 export const refreshSessionService = async (refreshToken) => {
   try {
     const { userId } = jwt.verify(refreshToken, process.env.JWT_SECRET);
- 
+
     const session = await Session.findOne({ userId, refreshToken });
     if (!session || new Date() > session.refreshTokenValidUntil) {
       throw createHttpError(401, 'Invalid or expired refresh token');
@@ -50,7 +63,7 @@ export const refreshSessionService = async (refreshToken) => {
       accessToken,
       refreshToken: newRefreshToken,
       accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
-      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     }).save();
 
     return { accessToken, newRefreshToken };

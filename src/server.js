@@ -4,12 +4,13 @@ import pino from 'pino-http';
 import dotenv from 'dotenv';
 import initMongoConnection from './db/initMongoConnection.js';
 import contactsRouter from './routers/contacts.js';
+import authRouter from './routers/auth.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 4008;
+const PORT = process.env.PORT || 4010;
 
 const setupServer = async (app) => {
   try {
@@ -19,7 +20,8 @@ const setupServer = async (app) => {
     app.use(express.json());
     app.use(pino({ transport: { target: 'pino-pretty' } }));
 
-    app.use(contactsRouter);
+    app.use('/api/auth', authRouter);
+    app.use('/contacts', contactsRouter);
 
     app.use((req, res, next) => {
       console.log(`Time: ${new Date().toLocaleString()}`);
@@ -38,6 +40,3 @@ const setupServer = async (app) => {
 };
 
 export default setupServer;
-
-
-
