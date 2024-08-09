@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import env from '../utils/env.js';
+import env from '../utils/env.js'; 
 
 const initMongoConnection = async () => {
   try {
@@ -8,12 +8,9 @@ const initMongoConnection = async () => {
     const url = env('MONGODB_URL');
     const db = env('MONGODB_DB');
 
-    const connectionString = `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`;
-
-    await mongoose.connect(connectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(
+      `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`
+    );
 
     console.log('Successfully connected to MongoDB');
   } catch (error) {

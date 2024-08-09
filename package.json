@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -25,8 +24,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
     "pino-http": "^10.2.0",
-    "pino-pretty": "^11.2.1",
-    "start": "^5.1.0"
+    "pino-pretty": "^11.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
