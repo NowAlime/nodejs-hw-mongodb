@@ -11,15 +11,17 @@ const PORT = process.env.PORT || 4010;
 
 const createUser = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const uri = process.env.MONGODB_URL;
+    if (!uri) {
+      throw new Error('MONGODB_URL is not defined');
+    }
+
+    await mongoose.connect(uri);
 
     const hashedPassword = await bcrypt.hash('securepassword', 10);
     const newUser = new User({
-      name: 'Jo Do',
-      email: 'jodo@example.com',
+      name: 'Ali',
+      email: 'tour@gmail.com',
       password: hashedPassword,
     });
     await newUser.save();
