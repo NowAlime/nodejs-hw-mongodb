@@ -18,29 +18,17 @@ const setupServer = async () => {
   try {
     await initMongoConnection();
 
-    
     app.use(pino({ transport: { target: 'pino-pretty' } }));
 
-   
     app.use(cors());
     app.use(express.json());
 
-   
-    app.use((req, res, next) => {
-      console.log(`Time: ${new Date().toLocaleString()} - ${req.method} ${req.originalUrl}`);
-      next();
-    });
-
-   
     app.use('/api/auth', authRouter);
     app.use('/contacts', contactsRouter);
 
-
     app.use(notFoundHandler);
-    
     app.use(errorHandler);
 
-    
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
@@ -49,4 +37,4 @@ const setupServer = async () => {
   }
 };
 
-export default setupServer;
+setupServer();
