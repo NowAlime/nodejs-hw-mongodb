@@ -19,17 +19,19 @@ const setupServer = async () => {
     await initMongoConnection();
 
     app.use(pino({ transport: { target: 'pino-pretty' } }));
-
     app.use(cors());
     app.use(express.json());
+
+  
+    app.get('/', (req, res) => {
+      res.send('Hello World!');
+    });
 
     app.use('/api/auth', authRouter);
     app.use('/contacts', contactsRouter);
 
     app.use(notFoundHandler);
     app.use(errorHandler);
-
-  
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
