@@ -10,8 +10,9 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-
-const port = process.env.PORT || 4949;
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 7979;
 
 const setupServer = async () => {
   const app = express();
