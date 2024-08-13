@@ -16,7 +16,6 @@ const setupServer = async () => {
   const app = express();
 
   try {
-    
     await initMongoConnection();
 
     app.use(pino({ transport: { target: 'pino-pretty' } }));
@@ -27,17 +26,15 @@ const setupServer = async () => {
       res.send('Hello World!');
     });
 
- 
     app.use('/api/auth', authRouter);
     app.use('/contacts', contactsRouter);
 
     app.use(notFoundHandler);
     app.use(errorHandler);
 
-  
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
-  });
+    });
   } catch (error) {
     console.error('Error initializing server:', error);
   }
