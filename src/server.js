@@ -10,16 +10,15 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 4010;
+const PORT = process.env.PORT || 5010;
 
 const setupServer = async () => {
   const app = express();
 
   try {
-    // Підключення до MongoDB
+    
     await initMongoConnection();
 
-    // Налаштування мідлварів
     app.use(pino({ transport: { target: 'pino-pretty' } }));
     app.use(cors());
     app.use(express.json());
