@@ -1,39 +1,19 @@
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
-import User from '../db/models/user.js';
-import Session from '../db/models/session.js';
 
-const authenticate = async (req, res, next) => {
+export const authenticate = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createHttpError(401, 'No token provided');
-    }
+    if (!authHeader) throw createHttpError(401, 'No authorization header');
 
     const token = authHeader.split(' ')[1];
+    if (!token) throw createHttpError(401, 'No token provided');
 
-    // Перевірка токену
-    const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Перевірка сесії
-    const session = await Session.findOne({ userId, accessToken: token });
-
-    if (!session || new Date() > session.accessTokenValidUntil) {
-      throw createHttpError(401, 'Access token expired');
-    }
-
-    // Завантаження користувача
-    req.user = await User.findById(userId);
-    
-    if (!req.user) {
-      throw createHttpError(401, 'User not found');
-    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { _id: decoded.userId };
 
     next();
   } catch (error) {
-    next(error);
+    next(createHttpError(401, 'Access token expired'));
   }
 };
-
-export default authenticate;

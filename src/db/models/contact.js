@@ -3,31 +3,21 @@ import mongoose from 'mongoose';
 const contactSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+    required: true
   },
   phone: {
     type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'User',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+    required: true
+  }
 });
 
-const Contact = mongoose.model('Contact', contactSchema);
-
-export default Contact;
+export default mongoose.model('Contact', contactSchema);
