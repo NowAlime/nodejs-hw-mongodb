@@ -35,9 +35,9 @@ const setupServer = async () => {
     app.use(errorHandler);
 
   
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server is running on port ${PORT}`);
-    });
+  });
   } catch (error) {
     console.error('Error initializing server:', error);
   }
