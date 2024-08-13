@@ -6,7 +6,7 @@ const createUser = async () => {
       const hashedPassword = await bcrypt.hash('securepassword', 10);
       const newUser = new User({
         name: 'Ali',
-        email: 'tour@gmail',
+        email: 'tour@gmail.com',
         password: hashedPassword
       });
       await newUser.save();
