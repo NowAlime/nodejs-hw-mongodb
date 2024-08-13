@@ -6,6 +6,6 @@ import { registerUser, loginUser, refreshSession, logoutUser } from '../controll
 const router = express.Router();
 router.post('/auth/register', validateBody(registerUserSchema), registerUser);
 router.post('/auth/login', validateBody(loginSchema), loginUser);
-router.post('/auth/refresh', refreshSchema);
+router.post('/auth/refresh', refreshSchema,refreshSession);
 router.post('/auth/logout', validateBody(logoutSchema), logoutUser);
 export default router;
