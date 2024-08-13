@@ -10,13 +10,10 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 7979;
+const port = process.env.PORT || 7979;
 
 const setupServer = async () => {
-  const app = express();
-
   try {
     await initMongoConnection();
 
@@ -34,11 +31,11 @@ const setupServer = async () => {
     app.use(notFoundHandler);
     app.use(errorHandler);
 
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server is running on port ${PORT}`);
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`Сервер працює на порту ${port}`);
     });
   } catch (error) {
-    console.error('Error initializing server:', error);
+    console.error('Помилка при ініціалізації сервера:', error);
   }
 };
 
