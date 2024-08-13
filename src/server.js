@@ -10,7 +10,8 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5010;
+
+const PORT = Number(env('PORT', '5010'));
 
 const setupServer = async () => {
   const app = express();
