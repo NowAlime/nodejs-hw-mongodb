@@ -3,7 +3,7 @@ import cors from 'cors';
 import pino from 'pino-http';
 import dotenv from 'dotenv';
 import initMongoConnection from './db/initMongoConnection.js';
-import contactsRouter from './routers/contacts.js';
+import router from './routers/contacts.js';  
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 
@@ -21,7 +21,7 @@ const setupServer = async () => {
     app.use(express.json());
     app.use(pino({ transport: { target: 'pino-pretty' } }));
 
-    app.use(contactsRouter);
+    app.use('/api', router);  
 
     app.use((req, res, next) => {
       console.log(`Time: ${new Date().toLocaleString()}`);
