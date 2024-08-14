@@ -12,7 +12,7 @@ const initMongoConnection = async () => {
     console.log('MongoDB Connection Info:', { user, pwd, url, db });
 
     await mongoose.connect(
-      `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`
+      `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`,
     );
 
     console.log('Successfully connected to MongoDB');

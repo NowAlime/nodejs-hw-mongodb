@@ -1,7 +1,8 @@
+
 import createHttpError from 'http-errors';
 import User from '../db/models/user.js';
 import Session from '../db/models/session.js';
-import { registerUserSchema,  loginSchema  } from '../schemas/userSchemas.js';
+import { registerUserSchema, loginSchema } from '../schemas/auth.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -33,7 +34,6 @@ export const registerUser = async (req, res, next) => {
   }
 };
 
-
 export const loginUser = async (req, res, next) => {
   try {
     const { error } = loginSchema.validate(req.body);
@@ -46,7 +46,6 @@ export const loginUser = async (req, res, next) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw createHttpError(401, 'Invalid email or password');
 
-    
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
@@ -67,8 +66,6 @@ export const loginUser = async (req, res, next) => {
   }
 };
 
-
-
 export const refreshSession = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -78,7 +75,6 @@ export const refreshSession = async (req, res, next) => {
     const session = await Session.findOne({ userId, refreshToken });
     if (!session) throw createHttpError(401, 'Invalid refresh token');
 
-   
     const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const newRefreshToken = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
@@ -97,7 +93,6 @@ export const refreshSession = async (req, res, next) => {
     next(error);
   }
 };
-
 
 export const logoutUser = async (req, res, next) => {
   try {
