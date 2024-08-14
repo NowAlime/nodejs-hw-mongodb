@@ -2,11 +2,21 @@ import {
   getAllContacts, 
   getContactById, 
   updateContactById, 
-  createContact, 
+  createContact as createContactService, 
   deleteContact 
 } from '../services/contacts.js';
 import Contact from '../db/models/contact.js';
 import createHttpError from 'http-errors';
+
+
+export const getContacts = async (req, res, next) => {
+  try {
+    const contacts = await Contact.find();
+    res.status(200).json({ contacts });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getAllContactsController = async (req, res, next) => {
   try {
@@ -67,7 +77,7 @@ export const postContactController = async (req, res, next) => {
     if (!name || !phoneNumber || !contactType) {
       return next(createHttpError(400, 'Name, phone number, and contact type are required'));
     }
-    const contact = await createContact({ name, phoneNumber, email, isFavourite, contactType });
+    const contact = await createContactService({ name, phoneNumber, email, isFavourite, contactType });
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
@@ -106,28 +116,6 @@ export const patchContactByIdController = async (req, res, next) => {
       status: 200,
       message: 'Contact updated successfully!',
       data: updatedContact,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-export const createContact = async (req, res, next) => {
-  try {
-    const { name, phone, email } = req.body;
-    const newContact = new Contact({
-      name,
-      phone,
-      email,
-      userId: req.user._id
-    });
-    await newContact.save();
-
-    res.status(201).json({
-      status: 'success',
-      message: 'Contact created successfully!',
-      data: newContact
     });
   } catch (error) {
     next(error);

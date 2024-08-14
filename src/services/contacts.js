@@ -10,7 +10,6 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model('Contact', contactSchema);
 
-
 export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', filters = {}) => {
   const skip = (page - 1) * perPage;
   const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
@@ -24,27 +23,43 @@ export const getAllContacts = async (page = 1, perPage = 10, sortBy = 'name', so
     query.isFavourite = filters.isFavourite === 'true';
   }
 
-  const totalItems = await Contact.countDocuments(query);
-  const contacts = await Contact.find(query).sort(sortOptions).skip(skip).limit(perPage);
-  return { contacts, totalItems };
+  try {
+    const totalItems = await Contact.countDocuments(query);
+    const contacts = await Contact.find(query).sort(sortOptions).skip(skip).limit(perPage);
+    return { contacts, totalItems };
+  } catch (error) {
+    throw new Error('Error fetching contacts: ' + error.message);
+  }
 };
 
 export const getContactById = async (id) => {
-  return Contact.findById(id);
-};
-
-export const updateContact = async (id, data) => {
-  return Contact.findByIdAndUpdate(id, data, { new: true });
+  try {
+    return await Contact.findById(id);
+  } catch (error) {
+    throw new Error('Error fetching contact by ID: ' + error.message);
+  }
 };
 
 export const updateContactById = async (contactId, update) => {
-  const updatedContact = await Contact.findByIdAndUpdate(contactId, update, { new: true });
-  return updatedContact;
+  try {
+    return await Contact.findByIdAndUpdate(contactId, update, { new: true });
+  } catch (error) {
+    throw new Error('Error updating contact: ' + error.message);
+  }
 };
+
 export const createContact = async (data) => {
-  return Contact.create(data);
+  try {
+    return await Contact.create(data);
+  } catch (error) {
+    throw new Error('Error creating contact: ' + error.message);
+  }
 };
 
 export const deleteContact = async (id) => {
-  return Contact.findByIdAndDelete(id);
+  try {
+    return await Contact.findByIdAndDelete(id);
+  } catch (error) {
+    throw new Error('Error deleting contact: ' + error.message);
+  }
 };
