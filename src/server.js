@@ -6,6 +6,7 @@ import env from './utils/env.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
+import authRouter from "./routers/mail.js"
 
 const PORT = Number(env('PORT', '3009'));
 
@@ -30,4 +31,5 @@ export const setupServer = () => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+  app.use('/auth', authRouter);
 };

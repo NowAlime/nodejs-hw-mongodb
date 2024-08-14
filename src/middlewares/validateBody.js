@@ -9,3 +9,9 @@ export const validateBody = (schema) => {
     next();
   };
 };
+
+
+export const resetPwdSchema = Joi.object({
+  token: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+});
