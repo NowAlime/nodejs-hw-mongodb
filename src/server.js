@@ -2,9 +2,9 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino-http';
-import env  from './utils/env.js';
-import errorHandler  from './middlewares/errorHandler.js';
-import notFoundHandler  from './middlewares/notFoundHandler.js';
+import env from './utils/env.js';
+import errorHandler from './middlewares/errorHandler.js';
+import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 
 const PORT = Number(env('PORT', '3009'));
@@ -25,7 +25,6 @@ export const setupServer = () => {
   app.use(router);
 
   app.use('*', notFoundHandler);
-
   app.use(errorHandler);
 
   app.listen(PORT, () => {
