@@ -1,42 +1,35 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino-http';
-import dotenv from 'dotenv';
-import initMongoConnection from './db/initMongoConnection.js';
-import contactsRouter from './routers/contacts.js';
-import authRouter from './routers/auth.js';
+import env from './utils/env.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
+import router from './routers/index.js';
+import authRouter from "./routers/mail.js"
 
-dotenv.config();
+const PORT = Number(env('PORT', '3009'));
 
-const PORT = process.env.PORT || 4010;
+export const setupServer = () => {
+  const app = express();
 
-const setupServer = async (app) => {
-  try {
-    await initMongoConnection();
+  app.use(cors());
+  app.use(cookieParser());
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
 
-    app.use(cors());
-    app.use(express.json());
-    app.use(pino({ transport: { target: 'pino-pretty' } }));
+  app.use(router);
 
-    app.use('/api/auth', authRouter);
-    app.use('/contacts', contactsRouter);
+  app.use('*', notFoundHandler);
+  app.use(errorHandler);
 
-    app.use((req, res, next) => {
-      console.log(`Time: ${new Date().toLocaleString()}`);
-      next();
-    });
-
-    app.use(notFoundHandler);
-    app.use(errorHandler);
-
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error('Error initializing server:', error);
-  }
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+  app.use('/auth', authRouter);
 };
-
-export default setupServer;
