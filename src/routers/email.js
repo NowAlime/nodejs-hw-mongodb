@@ -1,11 +1,21 @@
 import express from 'express';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import {createContactSchema,updateContactSchema,} from '../validation/contacts.js';
+import {
+  createContactSchema,
+  updateContactSchema,
+} from '../validation/contacts.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
-import {getAllContactsController, getContactByIdController, createContactController, deleteContactByIdController, patchContactByIdController,
+
+import {
+  getAllContactsController,
+  getContactByIdController,
+  createContactController,
+  deleteContactByIdController,
+  patchContactByIdController,
 } from '../controllers/contacts.js';
+
 import { upload } from '../middlewares/multerConfig.js';
 
 const router = express.Router();
