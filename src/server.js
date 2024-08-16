@@ -7,12 +7,11 @@ import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import authRouter from "./routers/email.js"
-app.use('/auth', authRouter);
 const PORT = Number(env('PORT', '3009'));
 
 export const setupServer = () => {
   const app = express();
-
+  app.use('/auth', authRouter);
   app.use(cors());
   app.use(cookieParser());
   app.use(
