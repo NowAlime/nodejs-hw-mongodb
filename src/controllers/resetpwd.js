@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
-import { User } from '../db/models/User.js'; 
+import { User } from '../db/models/user.js'; 
 import env from '../utils/env.js'; 
 
 export const resetPasswordController = async (req, res, next) => {
