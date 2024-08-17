@@ -1,5 +1,5 @@
 import express from 'express';
-import ctrlWrapper  from '../utils/ctrlWrapper.js';
+import ctrlWrapper from '../utils/ctrlWrapper.js';
 import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
 import {
   registerUserController,
@@ -8,26 +8,38 @@ import {
   logoutUserController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
-const router = express.Router();
+const authRouter = express.Router();
 const parseJSON = express.json();
 
-router.post(
+authRouter.post(
   '/register',
   parseJSON,
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
 
-router.post(
+authRouter.post(
   '/login',
   parseJSON,
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-router.post('/logout', parseJSON, ctrlWrapper(logoutUserController));
+// Middleware authenticate застосовується тільки до захищених маршрутів
+authRouter.post(
+  '/logout',
+  parseJSON,
+  authenticate,
+  ctrlWrapper(logoutUserController),
+);
 
-router.post('/refresh', parseJSON, ctrlWrapper(refreshUsersSessionController));
+authRouter.post(
+  '/refresh',
+  parseJSON,
+  authenticate,
+  ctrlWrapper(refreshUsersSessionController),
+);
 
-export default router;
+export default authRouter;

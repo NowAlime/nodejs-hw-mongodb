@@ -37,7 +37,7 @@ router.post(
   upload.single('photo'),
   ctrlWrapper(createContactController),
 );
-
+router.use(authenticate);
 router.delete(
   '/:contactId',
   isValidId,
