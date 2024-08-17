@@ -7,6 +7,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import authRouter from './routers/auth.js';
+import uploadRouter from './routers/uploadRouter.js'; 
 
 const PORT = Number(env('PORT', '3009'));
 
@@ -24,17 +25,15 @@ export const setupServer = () => {
     }),
   );
 
-  
   app.use('/auth', authRouter);
-  app.use(router);
-
-
+  app.use('/api', router);
+  app.use('/files', uploadRouter); 
   app.use('*', notFoundHandler);
-
-
   app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+
+setupServer();
