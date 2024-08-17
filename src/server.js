@@ -13,10 +13,9 @@ const PORT = Number(env('PORT', '3009'));
 export const setupServer = () => {
   const app = express();
 
-  // Загальні middleware
   app.use(cors());
   app.use(cookieParser());
-  app.use(express.json()); // Додаємо парсинг JSON, якщо це потрібно для інших маршрутів
+  app.use(express.json()); 
   app.use(
     pino({
       transport: {
@@ -25,14 +24,14 @@ export const setupServer = () => {
     }),
   );
 
-  // Роутери
+  
   app.use('/auth', authRouter);
   app.use(router);
 
-  // Обробка запитів до неіснуючих маршрутів
+
   app.use('*', notFoundHandler);
 
-  // Обробка помилок
+
   app.use(errorHandler);
 
   app.listen(PORT, () => {
