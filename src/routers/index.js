@@ -11,4 +11,4 @@ router.use('/auth', authRouter);
 router.use('/email', emailRouter);
 router.use('/upload', uploadRouter);
 
-export default router;
+export default router; 
