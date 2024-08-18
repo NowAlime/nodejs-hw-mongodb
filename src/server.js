@@ -5,18 +5,17 @@ import pino from 'pino-http';
 import env from './utils/env.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
-import router from './routers/index.js';
-import authRouter from './routers/auth.js';
-import uploadRouter from './routers/uploadRouter.js';
+import mainRouter from './routers/index.js'; 
 
-const PORT = Number(env('PORT', '3009'));
+const PORT = Number(env('PORT', '5009'));
 
 export const setupServer = () => {
   const app = express();
+
   app.use(express.json());
   app.use(cors());
   app.use(cookieParser());
-  app.use(express.json()); 
+
   app.use(
     pino({
       transport: {
@@ -25,14 +24,10 @@ export const setupServer = () => {
     }),
   );
 
-  
-  app.use('/auth', authRouter);
-  app.use(router);
-  app.use(uploadRouter);
+
+  app.use('/api', mainRouter);
 
   app.use('*', notFoundHandler);
-
-
   app.use(errorHandler);
 
   app.listen(PORT, () => {
