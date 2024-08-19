@@ -68,18 +68,32 @@ export async function deleteContactByIdController(req, res, next) {
   res.sendStatus(204);
 }
 
-export async function patchContactByIdController(req, res, next) {
+export const patchContactByIdController = async (req, res) => {
   const { contactId } = req.params;
-  const userId = req.user._id;
-  const contact = await updateContact(contactId, req.body, userId);
+  const photo = req.file;
 
-  if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
+  const result = await updateContact(contactId, {
+    ...req.body,
+    userId: req.user._id,
+    photo: photoUrl,
+  });
+
+  if (!result) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
   res.json({
     status: 200,
     message: 'Successfully patched a contact!',
-    data: contact,
+    data: result.contact,
   });
-}
+};
