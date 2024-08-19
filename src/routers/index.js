@@ -8,7 +8,7 @@ const router = Router();
 
 router.use('/contacts', contactsRouter);
 router.use('/auth', authRouter);
-router.use('/email', emailRouter);
-router.use('/upload', uploadRouter);
+router.use('/emailRouter', emailRouter);
+router.use('/uploadRouter', uploadRouter);
 
 export default router; 
