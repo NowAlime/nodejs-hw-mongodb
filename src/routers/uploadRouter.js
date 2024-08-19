@@ -1,13 +1,10 @@
 import express from 'express';
-import { upload } from '../middlewares/multerConfig.js';
+import upload from '../middlewares/upload.js'; 
+import { createContact, updateContact } from '../controllers/upload.js';  
 
 const uploadRouter = express.Router();
 
-uploadRouter.post('/upload', upload.single('file'), (req, res) => {
-  res.json({
-    message: 'File uploaded successfully',
-    file: req.file
-  });
-});
+uploadRouter.post('/contacts', upload.single('photo'), createContact);
+uploadRouter.patch('/contacts/:contactId', upload.single('photo'), updateContact);
 
 export default uploadRouter;

@@ -33,3 +33,4 @@ export const resetPasswordSchema = Joi.object({
     'any.required': 'Password is required'
   }),
 });
+
