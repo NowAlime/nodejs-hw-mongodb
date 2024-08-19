@@ -12,8 +12,14 @@ const PORT = Number(env('PORT', '5009'));
 export const setupServer = () => {
   const app = express();
 
-  // Middleware
-  app.use(cors());
+
+  app.use(
+    cors({
+      origin: '*', 
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    })
+  );
   app.use(cookieParser());
   app.use(express.json());
   app.use(
@@ -21,18 +27,19 @@ export const setupServer = () => {
       transport: {
         target: 'pino-pretty',
       },
-    }),
+    })
   );
 
-  // Routes
+ 
   app.use(router);
 
-  // Error handling
+  
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 
-  // Start server
+  
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+
