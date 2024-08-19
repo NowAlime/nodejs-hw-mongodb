@@ -6,9 +6,9 @@ import uploadRouter from './uploadRouter.js';
 
 const router = Router();
 
-contactsRouter.use('/contacts', contactsRouter);
-authRouter.use('/auth', authRouter);
-emailRouter.use('/emailRouter', emailRouter);
-uploadRouter.use('/uploadRouter', uploadRouter);
+router.use('/contacts', contactsRouter);
+router.use('/auth', authRouter);
+router.use('/email', emailRouter); 
+router.use('/upload', uploadRouter); 
 
-export default router; 
+export default router;
