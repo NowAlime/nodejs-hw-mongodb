@@ -30,7 +30,10 @@ export const setupServer = () => {
     })
   );
 
- 
+  app.get('/', (req, res) => {
+    res.send('Welcome to the home page!');
+  });
+  
   app.use(router);
 
   
