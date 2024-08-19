@@ -1,30 +1,22 @@
-import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
-import jwt from 'jsonwebtoken';
-import User from '../db/models/user.js';
-import env from '../utils/env.js';
+import { requestResetToken } from '../services/auth.js';
 
-export const sendResetEmailController =  async (req, res, next) => {
+export const sendResetEmailController = async (req, res, next) => {
   try {
-    await requestResetToken(req.body.email);
-
-    res.json({
-      status: 200,
-      message: 'Reset password email has been successfully sent.',
-      data: {},
-    });
+    const { email } = req.body;
+    await requestResetToken(email);
+    res.status(200).json({ message: 'Reset email sent' });
   } catch (err) {
-    createHttpError(500, 'Failed to send the email, please try again later.');
     next(err);
   }
 };
 
-export const resetPasswordController =  async (req, res) => {
-  await resetPassword(req.body);
-
-  res.json({
-    message: 'Password has been successfully reset.',
-    status: 200,
-    data: {},
-  });
+export const resetPasswordController = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+    await resetPassword({ token, password });
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (err) {
+    next(err);
+  }
 };
