@@ -4,9 +4,9 @@ import {
   loginUser,
   refreshUsersSession,
   logoutUser,
-  sendResetEmail,
   sendEmail,
-  updatePassword, deleteSession,
+  updatePassword,
+  deleteSession,
 } from '../services/auth.js';
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
@@ -80,32 +80,32 @@ export const sendResetEmailController = async (req, res) => {
   try {
     const { email } = req.body;
 
-    console.log('Отримана електронна пошта:', email);
+    console.log('Received email:', email);
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw createHttpError(404, 'Користувача не знайдено!');
+      throw createHttpError(404, 'User not found!');
     }
 
-    console.log('Знайдений користувач:', user);
+    console.log('Found user:', user);
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: '5m',
     });
 
-    console.log('Створений JWT токен:', token);
+    console.log('Generated JWT token:', token);
 
     const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${token}`;
 
     const emailSent = await sendEmail({
       to: email,
-      subject: 'Скидання пароля',
-      html: `<p>Натисніть <a href="${resetLink}">тут</a>, щоб скинути пароль</p>`,
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password</p>`,
     });
 
     if (!emailSent) {
-      throw createHttpError(500, 'Не вдалося надіслати листа, будь ласка, спробуйте пізніше.');
+      throw createHttpError(500, 'Failed to send email. Please try again later.');
     }
 
     res.status(200).json({
@@ -114,24 +114,31 @@ export const sendResetEmailController = async (req, res) => {
       data: {},
     });
   } catch (error) {
-    console.error('Помилка у sendResetEmailController:', error);
+    console.error('Error in sendResetEmailController:', error);
     res.status(error.status || 500).json({
       status: error.status || 500,
-      message: error.message || 'Внутрішня помилка сервера',
+      message: error.message || 'Internal Server Error',
       data: {},
     });
   }
 };
 
-
 export const resetPasswordController = async (req, res) => {
   try {
     const { token, password } = req.body;
 
+    if (!token || !password) {
+      throw createHttpError(400, 'Token and password are required.');
+    }
+
     let decoded;
     try {
+      console.log('Received token:', token);
+      console.log('Verifying token with secret:', process.env.JWT_SECRET);
       decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded token:', decoded);
     } catch (error) {
+      console.error('Token verification error:', error.message);
       throw createHttpError(401, 'Token is expired or invalid.');
     }
 
@@ -140,10 +147,7 @@ export const resetPasswordController = async (req, res) => {
       throw createHttpError(404, 'User not found!');
     }
 
-    
     await updatePassword(user._id, password);
-
-    
     await deleteSession(user._id);
 
     res.status(200).json({
@@ -152,7 +156,7 @@ export const resetPasswordController = async (req, res) => {
       data: {},
     });
   } catch (error) {
-    console.error('Error in resetPasswordController:', error);
+    console.error('Error in resetPasswordController:', error.message);
     res.status(error.status || 500).json({
       status: error.status || 500,
       message: error.message || 'Internal Server Error',

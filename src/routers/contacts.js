@@ -12,9 +12,12 @@ import {
   getAllContactsController,
   getContactByIdController,
   createContactController,
+  updateContactController,
   deleteContactByIdController,
-  patchContactByIdController,
+  patchContactByIdController
 } from '../controllers/contacts.js';
+import upload from '../middlewares/upload.js';
+
 
 const router = express.Router();
 const parseJSON = express.json({
@@ -48,5 +51,9 @@ router.patch(
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactByIdController),
 );
+
+router.post('/contacts', upload.single('photo'), createContactController);
+
+router.patch('/contacts/:contactId', upload.single('photo'), updateContactController);
 
 export default router;

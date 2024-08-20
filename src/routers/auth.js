@@ -11,6 +11,7 @@ import {
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
+
 const router = express.Router();
 const parseJSON = express.json();
 
@@ -35,5 +36,7 @@ router.post('/refresh', parseJSON, ctrlWrapper(refreshUsersSessionController));
 router.post('/send-reset-email', parseJSON, validateBody(emailSchema), ctrlWrapper(sendResetEmailController));
 
 router.post('/reset-pwd', parseJSON, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController));
+
+
 
 export default router;
