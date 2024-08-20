@@ -1,10 +1,16 @@
-import {ONE_DAY } from '../constants/index.js';
+import { ONE_DAY } from '../constants/index.js';
 import {
   registerUser,
   loginUser,
-  refreshSession,
+  refreshUsersSession,
   logoutUser,
+  sendResetEmail,
+  sendEmail,
+  updatePassword, deleteSession,
 } from '../services/auth.js';
+import jwt from 'jsonwebtoken';
+import createHttpError from 'http-errors';
+import User from '../db/models/user.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -68,4 +74,89 @@ export const logoutUserController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const sendResetEmailController = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    console.log('Отримана електронна пошта:', email);
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw createHttpError(404, 'Користувача не знайдено!');
+    }
+
+    console.log('Знайдений користувач:', user);
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: '5m',
+    });
+
+    console.log('Створений JWT токен:', token);
+
+    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${token}`;
+
+    const emailSent = await sendEmail({
+      to: email,
+      subject: 'Скидання пароля',
+      html: `<p>Натисніть <a href="${resetLink}">тут</a>, щоб скинути пароль</p>`,
+    });
+
+    if (!emailSent) {
+      throw createHttpError(500, 'Не вдалося надіслати листа, будь ласка, спробуйте пізніше.');
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: 'Reset password email has been successfully sent.',
+      data: {},
+    });
+  } catch (error) {
+    console.error('Помилка у sendResetEmailController:', error);
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message || 'Внутрішня помилка сервера',
+      data: {},
+    });
+  }
+};
+
+
+export const resetPasswordController = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      throw createHttpError(401, 'Token is expired or invalid.');
+    }
+
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw createHttpError(404, 'User not found!');
+    }
+
+    
+    await updatePassword(user._id, password);
+
+    
+    await deleteSession(user._id);
+
+    res.status(200).json({
+      status: 200,
+      message: 'Password has been successfully reset.',
+      data: {},
+    });
+  } catch (error) {
+    console.error('Error in resetPasswordController:', error);
+    res.status(error.status || 500).json({
+      status: error.status || 500,
+      message: error.message || 'Internal Server Error',
+      data: {},
+    });
+  }
 };
