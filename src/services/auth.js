@@ -116,11 +116,38 @@ export const sendEmail = async ({ to, subject, html }) => {
   }
 };
 
-export const sendResetEmail = async (email) => {
-  const user = await User.findOne({ email });
-  return user;
-};
+const sendResetEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
 
+  
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw createHttpError(404, 'User not found!');
+    }
+
+    
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '5m' });
+
+  
+    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${token}`;
+
+    
+    await sendEmail({
+      to: email,
+      subject: 'Password Reset',
+      html: `<p>To reset your password, click the following link:</p><p><a href="${resetLink}">${resetLink}</a></p>`
+    });
+
+    res.status(200).json({
+      status: 200,
+      message: "Reset password email has been successfully sent.",
+      data: {}
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 export const updatePassword = async (userId, newPassword) => {
