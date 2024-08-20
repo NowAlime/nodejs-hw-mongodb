@@ -1,5 +1,5 @@
 import express from 'express';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
+import  ctrlWrapper  from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
@@ -16,36 +16,32 @@ import {
   patchContactByIdController,
 } from '../controllers/contacts.js';
 
-
-const contactsRouter = express.Router();
-
-
+const router = express.Router();
 const parseJSON = express.json({
   type: ['application/json', 'application/vnd.api+json'],
   limit: '100kb',
 });
 
+router.use(authenticate);
 
-contactsRouter.use(authenticate);
+router.get('/', ctrlWrapper(getAllContactsController));
 
-contactsRouter.get('/', ctrlWrapper(getAllContactsController));
+router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
-contactsRouter.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
-
-contactsRouter.post(
+router.post(
   '',
   parseJSON,
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
-contactsRouter.delete(
+router.delete(
   '/:contactId',
   isValidId,
   ctrlWrapper(deleteContactByIdController),
 );
 
-contactsRouter.patch(
+router.patch(
   '/:contactId',
   parseJSON,
   isValidId,
@@ -53,4 +49,4 @@ contactsRouter.patch(
   ctrlWrapper(patchContactByIdController),
 );
 
-export default contactsRouter;
+export default router;
