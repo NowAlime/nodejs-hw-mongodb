@@ -7,7 +7,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './docs/swagger.json' assert { type: 'json' };
+import swaggerDocument from '/docs/swagger.json' assert { type: 'json' };
 
 const PORT = Number(env('PORT', '5011'));
 
