@@ -37,7 +37,7 @@ components:
         userId:
           description: 'User id'
           type: string
-          example: '65e4decdd286b30065d54af9'
+          example: '37668723987827nowwncudvhui'
         photo:
           description: 'Link to contact photo'
           type: string
