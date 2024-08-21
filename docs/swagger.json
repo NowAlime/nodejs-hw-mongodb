@@ -92,6 +92,7 @@
           "requestBody": {
             "required": true,
             "content": {
+              "multipart/form-data": null,
               "application/json": {
                 "schema": {
                   "type": "object",

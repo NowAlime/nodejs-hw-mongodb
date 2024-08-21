@@ -1,34 +1,51 @@
 get:
   tags:
     - Contacts
-  summary: Get all contacts
-  operationId: getAllContacts
-  description: Retrieve a list of all contacts.
+  summary: Get contact by ID
+  operationId: getContactById
+  description: Retrieve a specific contact by its ID.
   security:
     - bearerAuth: []
+parameters:
+  - in: query
+    name: page
+    schema:
+      type: integer
+    example: 1
+  - in: query
+    name: perPage
+    schema:
+      type: integer
+      example: 10
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      example: 'contactType'
+    description: 'All contacts fields can be mentioned. Default value - _id'
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: ['asc', 'desc']
+      example: 'asc'
+  - in: query
+    name: isFavourite
+    schema:
+      type: boolean
+      example: true
+  - in: query
+    name: contactType
+    schema:
+      type: string
+      enum: ['work', 'home', 'personal']
+      example: home
   responses:
     '200':
-      description: A list of contacts
+      description: Successful operation
       content:
         application/json:
           schema:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: '609e129e74f2a2b824e4d1e8'
-                name:
-                  type: string
-                  example: 'John Doe'
-                email:
-                  type: string
-                  example: 'john.doe@example.com'
-                phone:
-                  type: string
-                  example: '+1234567890'
-    '401':
-      description: Unauthorized
-    '500':
-      description: Internal Server Error
+            $ref: '#/components/schemas/Contact'
+    '404':
+      description: Contact not found
