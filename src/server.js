@@ -7,13 +7,13 @@ import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const PORT = Number(env('PORT', '5011'));
 
 export const setupServer = () => {
   const app = express();
-
+ 
   app.use(cors());
   app.use(cookieParser());
   app.use(
@@ -27,7 +27,9 @@ export const setupServer = () => {
     res.send('Welcome to the home page!');
   });
   app.use(router);
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  
+
+  app.use('/api-docs', swaggerDocs());
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 

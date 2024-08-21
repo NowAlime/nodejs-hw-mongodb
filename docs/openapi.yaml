@@ -1,39 +1,35 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: <API>
+  title: Contacts app
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description:
-    Description of your API
+  description: This is a documentation of contacts app
 tags:
   - name: Contacts
-    description: Operations related to contacts
+    description: Operations about users.
+  - name: Auth
+    description: Auth operations.
 servers:
   - url: http://localhost:3000
-
-
+  - url: http://hw7-swagger-08gw.onrender.com
 paths:
   /contacts:
     get:
       $ref: '../swagger/paths/contacts/get.yaml'
     post:
       $ref: '../swagger/paths/contacts/post.yaml'
-  /contacts/{contactId}:
+  /contacts/{id}:
     get:
       $ref: '../swagger/paths/contacts/{id}/get.yaml'
     patch:
       $ref: '../swagger/paths/contacts/{id}/patch.yaml'
     delete:
       $ref: '../swagger/paths/contacts/{id}/delete.yaml'
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
-  schemas:
-    Contact:
-      $ref: '../swagger/components/schemas/contacts.yaml'
-      $ref: '../swagger/components/schemas/auth.yaml'
