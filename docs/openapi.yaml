@@ -6,12 +6,13 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description:
-    <опис вашого додатку>
+    Description of your API
 tags:
-  # теги, що ви будете використовувати
+  - name: Contacts
+    description: Operations related to contacts
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+
 
 paths:
   /contacts:

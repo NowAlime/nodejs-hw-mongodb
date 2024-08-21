@@ -7,17 +7,19 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "<опис вашого додатку>"
+    "description": "Description of your API"
   },
+  "tags": [
+    {
+      "name": "Contacts",
+      "description": "Operations related to contacts"
+    }
+  ],
   "servers": [
     {
       "url": "http://localhost:3000"
-    },
-    {
-      "url": null
     }
   ],
-  "tags": null,
   "paths": {
     "/contacts": {
       "get": {
