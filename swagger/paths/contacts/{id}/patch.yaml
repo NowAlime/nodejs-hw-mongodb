@@ -7,11 +7,12 @@ patch:
   security:
     - bearerAuth: []
   parameters:
-    - name: contactId
-      in: path
-      required: true
-      schema:
-        type: string
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '27272nowkowllssmcjdnm2345'
   requestBody:
     required: true
     content:

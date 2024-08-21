@@ -32,3 +32,8 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Contact:
+      $ref: '../swagger/components/shemas/contacts.yaml'
+      $ref: '../swagger/components/shemas/auth.yaml'
