@@ -35,5 +35,5 @@ components:
       bearerFormat: JWT
   schemas:
     Contact:
-      $ref: '../swagger/components/shemas/contacts.yaml'
-      $ref: '../swagger/components/shemas/auth.yaml'
+      $ref: '../swagger/components/schemas/contacts.yaml'
+      $ref: '../swagger/components/schemas/auth.yaml'
