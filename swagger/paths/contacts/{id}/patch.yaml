@@ -12,7 +12,7 @@ parameters:
     description: The ID of the contact to update
     schema:
       type: string
-      example: '65ca67e7ae7f10c88b598384'
+      example: '64f3b2a7d123c10077c89b22'
 requestBody:
   content:
     multipart/form-data:
@@ -26,7 +26,7 @@ requestBody:
           phoneNumber:
             description: "Contact's phone number"
             type: string
-            example: '8494358395'
+            example: '0979496396'
           email:
             description: "Contact's email"
             type: string

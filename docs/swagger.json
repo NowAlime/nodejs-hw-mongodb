@@ -2,258 +2,330 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "<API>",
+    "title": "Contacts app",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "Description of your API"
+    "description": "Contacts API"
   },
-  "tags": [
-    {
-      "name": "Contacts",
-      "description": "Operations related to contacts"
-    }
-  ],
   "servers": [
     {
       "url": "http://localhost:3000"
+    },
+    {
+      "url": "# URL for deployed site"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Contacts",
+      "description": "Operations about contacts."
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication operations."
     }
   ],
   "paths": {
     "/contacts": {
       "get": {
-        "get": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Get all contacts",
-          "operationId": "getAllContacts",
-          "description": "Retrieve a list of all contacts.",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "A list of contacts",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "609e129e74f2a2b824e4d1e8"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "John Doe"
-                        },
-                        "email": {
-                          "type": "string",
-                          "example": "john.doe@example.com"
-                        },
-                        "phone": {
-                          "type": "string",
-                          "example": "+1234567890"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get list of contacts",
+        "operationId": "getContacts",
+        "description": "Retrieve a list of all contacts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer"
             },
-            "401": {
-              "description": "Unauthorized"
-            },
-            "500": {
-              "description": "Internal Server Error"
+            "example": 1
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "description": "Number of contacts per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 10
             }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "description": "Field to sort by",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "name"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "description": "Sort order",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "example": "asc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "contactType",
+            "description": "Filter contacts by type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "work",
+                "home",
+                "personal"
+              ],
+              "example": "personal"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isFavourite",
+            "description": "Filter contacts by favourite status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
           }
         }
       },
       "post": {
-        "post": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Create a new contact",
-          "operationId": "createContact",
-          "description": "Create a new contact and save it in the database.",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": null,
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string"
-                    },
-                    "phone": {
-                      "type": "string"
-                    }
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Create contact",
+        "operationId": "createContact",
+        "description": "Create a new contact",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "phoneNumber",
+                  "contactType"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Contact's name",
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact's phone number",
+                    "type": "string",
+                    "example": "8494358395"
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "default": "user@gmail.com",
+                    "example": "john.doe@example.com"
+                  },
+                  "isFavourite": {
+                    "description": "Whether the contact is marked as a favorite",
+                    "type": "boolean",
+                    "default": false,
+                    "example": false
+                  },
+                  "contactType": {
+                    "description": "Contact's type",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "default": "personal",
+                    "example": "personal"
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
                   }
                 }
               }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201"
           },
-          "responses": {
-            "201": {
-              "description": "Contact created successfully"
-            },
-            "400": {
-              "description": "Bad request"
-            }
+          "401": {
+            "$ref": "#/components/responses/401"
           }
         }
       }
     },
-    "/contacts/{contactId}": {
+    "/contacts/{id}": {
       "get": {
-        "get": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Get contact by ID",
-          "operationId": "getContactById",
-          "description": "Retrieve a specific contact by its ID.",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "contactId",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successful operation"
-            },
-            "404": {
-              "description": "Contact not found"
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get contact by ID",
+        "operationId": "getContact",
+        "description": "Retrieve a contact by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
             }
           }
-        }
-      },
-      "patch": {
-        "patch": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Update an existing contact",
-          "operationId": "updateContact",
-          "description": "Update details of an existing contact by ID.",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "contactId",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved contact",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
                   "properties": {
-                    "name": {
-                      "type": "string"
+                    "status": {
+                      "type": "integer",
+                      "example": 200
                     },
-                    "email": {
-                      "type": "string"
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found contact with id 65ca67e7ae7f10c88b598384!"
                     },
-                    "phone": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/contact"
                     }
                   }
                 }
               }
             }
           },
-          "responses": {
-            "200": {
-              "description": "Contact updated successfully"
-            },
-            "400": {
-              "description": "Bad request"
-            },
-            "404": {
-              "description": "Contact not found"
-            }
+          "401": {
+            "$ref": "#/components/responses/401"
           }
         }
       },
-      "delete": {
-        "delete": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Delete a contact by ID",
-          "operationId": "deleteContact",
-          "description": "Remove a contact from the database by ID.",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "name": "contactId",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Contact deleted successfully"
-            },
-            "404": {
-              "description": "Contact not found"
+      "patch": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Update contact",
+        "operationId": "updateContact",
+        "description": "Update a contact by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID of the contact to update",
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
             }
           }
-        }
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
-}
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Contact's name",
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact's phone number",
+                    "type": "string",
+                    "example": "8494358395"
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "default": "user@gmail.com",
+                    "example": "john.doe@example.com"
+                  },
+                  "isFavourite": {
+                    "description": "Whether the contact is marked as a favorite",
+                    "type": "boolean",
+                    "default": false,
+                    "example": false
+                  },
+                  "contactType": {
+                    "description": "Contact's type",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "default": "personal",
+                    "example": "personal"
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses

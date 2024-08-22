@@ -47,7 +47,7 @@ parameters:
     required: false
     schema:
       type: boolean
-      example: 10
+      example: 1
 responses:
   '200':
     $ref: '../../components/responses/200.yaml'
