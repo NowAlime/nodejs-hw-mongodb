@@ -11,10 +11,10 @@ parameters:
     required: true
     schema:
       type: string
-      example: '65ca67e7ae7f10c88b598384'
+      example: '64f3b2a7d123c10077c89b22'
 responses:
   '200':
-    description: 'Get conttact by id'
+    description: 'Get  by id'
     content:
       application/json:
         schema:
