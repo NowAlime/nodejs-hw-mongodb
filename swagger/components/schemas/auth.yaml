@@ -26,4 +26,4 @@ properties:
     description: 'Time when the user was last updated'
     type: string
     format: date-time
-    example: '2024-08-22 T11:00:11Z
+    example: '2024-08-22 T11:00:11Z'
