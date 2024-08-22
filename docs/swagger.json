@@ -11,20 +11,22 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://localhost:3000",
+      "description": "Local development server"
     },
     {
-      "url": "http://hw7-swagger-08gw.onrender.com"
+      "url": "https://nodejs-hw-mongodb-qu0x.onrender.com",
+      "description": "Production server"
     }
   ],
   "tags": [
     {
       "name": "Contacts",
-      "description": "Operations about users."
+      "description": "Operations about contacts"
     },
     {
       "name": "Auth",
-      "description": "Auth operations."
+      "description": "Auth operations"
     }
   ],
   "paths": {
@@ -106,7 +108,7 @@
             "required": false,
             "schema": {
               "type": "boolean",
-              "example": 10
+              "example": 1
             }
           }
         ],
@@ -150,7 +152,7 @@
                   "phoneNumber": {
                     "description": "Contact's phone number",
                     "type": "string",
-                    "example": "8494358395"
+                    "example": "0979496396"
                   },
                   "email": {
                     "description": "Contact's email",
@@ -215,13 +217,13 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
+              "example": "64f3b2a7d123c10077c89b22"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Get conttact by id",
+            "description": "Get  by id",
             "content": {
               "application/json": {
                 "schema": {
@@ -274,7 +276,7 @@
             "description": "The ID of the contact to update",
             "schema": {
               "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
+              "example": "64f3b2a7d123c10077c89b22"
             }
           }
         ],
@@ -292,7 +294,7 @@
                   "phoneNumber": {
                     "description": "Contact's phone number",
                     "type": "string",
-                    "example": "8494358395"
+                    "example": "0979496396"
                   },
                   "email": {
                     "description": "Contact's email",
@@ -385,7 +387,7 @@
             "description": "The ID of the contact to delete",
             "schema": {
               "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
+              "example": "64f3b2a7d123c10077c89b22"
             }
           }
         ],
@@ -438,7 +440,7 @@
                   "password": {
                     "type": "string",
                     "description": "User's password",
-                    "example": "user001"
+                    "example": "user"
                   }
                 }
               }
@@ -464,18 +466,23 @@
           }
         }
       }
-    },
-   
- 
-      
+    }
+  },
   "components": {
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
+      "Contact": {
+        "$ref": "#/components/schemas/contact"
+      },
+      "Auth": {
+        "$ref": "#/components/schemas/auth"
+      },
       "contact": {
         "type": "object",
         "required": [
@@ -489,7 +496,7 @@
           "_id": {
             "description": "Contact's id",
             "type": "string",
-            "example": "65e4decdd286b30065d54af9"
+            "example": "64f3b2a7d123c10077c89b22"
           },
           "name": {
             "description": "Contact's name",
@@ -499,7 +506,7 @@
           "phoneNumber": {
             "description": "Contact's phone number",
             "type": "number",
-            "example": 8494358395
+            "example": 979496396
           },
           "email": {
             "description": "Contact's email",
@@ -527,7 +534,7 @@
           "userId": {
             "description": "Identifier of the user",
             "type": "string",
-            "example": "60d21b4667d0d8992e610c88"
+            "example": "64f3b2a7d123c10077c89b22"
           },
           "photo": {
             "description": "Link to the contact's photo",
@@ -538,13 +545,13 @@
             "description": "Time when the contact was added",
             "type": "string",
             "format": "date-time",
-            "example": "2023-08-02T10:20:30Z"
+            "example": "2024-08-22T11:10:00Z"
           },
           "updatedAt": {
             "description": "Time when the contact was last updated",
             "type": "string",
             "format": "date-time",
-            "example": "2023-08-02T10:20:30Z"
+            "example": "2024-08-22T11:10:00Z"
           }
         }
       },
@@ -570,19 +577,19 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "user001"
+            "example": "user11111"
           },
           "createdAt": {
             "description": "Time when the user was registered",
             "type": "string",
             "format": "date-time",
-            "example": "2023-08-02T10:20:30Z"
+            "example": "2024-08-22 T11:00:11Z"
           },
           "updatedAt": {
             "description": "Time when the user was last updated",
             "type": "string",
             "format": "date-time",
-            "example": "2023-08-02T10:20:30Z"
+            "example": "2024-08-22 T11:00:11Z"
           }
         }
       }
@@ -664,7 +671,7 @@
             "schema": {
               "type": "object",
               "required": [
-                "statu",
+                "status",
                 "message",
                 "data"
               ],
@@ -737,6 +744,22 @@
                 "message": {
                   "type": "string",
                   "example": "Contact not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized access"
                 }
               }
             }
