@@ -1,5 +1,5 @@
 import express from 'express';
-import  ctrlWrapper  from '../utils/ctrlWrapper.js';
+import ctrlWrapper from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
@@ -7,17 +7,15 @@ import {
 } from '../validation/contacts.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import upload from '../middlewares/upload.js';
 
 import {
   getAllContactsController,
   getContactByIdController,
   createContactController,
-  updateContactController,
+  patchContactController,
   deleteContactByIdController,
-  patchContactByIdController
 } from '../controllers/contacts.js';
-import upload from '../middlewares/upload.js';
-
 
 const router = express.Router();
 const parseJSON = express.json({
@@ -34,6 +32,7 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 router.post(
   '',
   parseJSON,
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
@@ -47,13 +46,10 @@ router.delete(
 router.patch(
   '/:contactId',
   parseJSON,
+  upload.single('photo'),
   isValidId,
   validateBody(updateContactSchema),
-  ctrlWrapper(patchContactByIdController),
+  ctrlWrapper(patchContactController),
 );
-
-router.post('/contacts', upload.single('photo'), createContactController);
-
-router.patch('/contacts/:contactId', upload.single('photo'), updateContactController);
 
 export default router;
