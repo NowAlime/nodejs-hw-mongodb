@@ -6,18 +6,23 @@ import  SessionsCollection  from '../db/models/session.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
 import nodemailer from 'nodemailer';
 
-export const registerUser = async (payload) => {
-  const user = await User.findOne({
-    email: payload.email,
-  });
+export const hashPassword = async (password) => {
+  const saltRounds = 10; 
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
 
-  if (user) throw createHttpError(409, 'Email in use');
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 10);
-  return await User.create({
-    ...payload,
-    password: encryptedPassword,
-  });
+export const registerUser = async (userData) => {
+  const { email, password } = userData;
+
+  const hashedPassword = await hashPassword(password); 
+  const user = await User.create({ email, password: hashedPassword });
+
+
+  const { password: _, ...userWithoutPassword } = user.toObject();
+
+  return userWithoutPassword;
 };
 
 export const loginUser = async (payload) => {

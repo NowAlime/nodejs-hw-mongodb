@@ -7,7 +7,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 
-const PORT = Number(env('PORT', '5011'));
+const PORT = Number(env('PORT', '5012'));
 
 export const setupServer = () => {
   const app = express();
