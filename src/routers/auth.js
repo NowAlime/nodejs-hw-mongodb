@@ -34,7 +34,7 @@ router.post('/refresh', parseJSON, ctrlWrapper(refreshUsersSessionController));
 router.post('/send-reset-email', parseJSON, validateBody(emailSchema), ctrlWrapper(sendResetEmailController));
 
 router.post(
-  '/reset-password', parseJSON, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController));
+  '/reset-pwd', parseJSON, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController));
 
 
 
