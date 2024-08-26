@@ -22,7 +22,6 @@ export const registerUserController = async (req, res) => {
     data: user,
   });
 };
-
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,

@@ -13,27 +13,40 @@ import env from '../utils/env.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import saveFileToUploadDir from '../utils/saveFileToUploadDir.js';
 
-export const getContactsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { sortBy, sortOrder } = parseSortParams(req.query);
-  const filter = parseFilterParams(req.query);
+export const getContactsController = async (req, res, next) => {
+  try {
+    const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseFilterParams(req.query);
 
-  const contacts = await getAllContacts({
-    page,
-    perPage,
-    sortBy,
-    sortOrder,
-    filter,
-    userId: req.user._id,
-  });
+   
+    console.log('Query Parameters:', { page, perPage, sortBy, sortOrder, filter });
 
-  res.status(200).json({
-    status: 200,
-    message: `Success!`,
-    data: contacts,
-  });
+    const contacts = await getAllContacts({
+      page,
+      perPage,
+      sortBy,
+      sortOrder,
+      filter,
+      userId: req.user._id,
+    });
+
+
+    if (!contacts) {
+      throw createHttpError(404, 'Contacts not found');
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: `Success!`,
+      data: contacts,
+    });
+  } catch (error) {
+
+    console.error('Error in getContactsController:', error);
+    next(error);
+  }
 };
-
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId, req.user._id);

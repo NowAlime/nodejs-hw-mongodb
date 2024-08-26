@@ -6,6 +6,6 @@ const contactSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   photo: { type: String }, }, { timestamps: true });
 
-const Contact = mongoose.model('Contact', contactSchema);
+const Contact = mongoose.model('contacts', contactSchema);
 
 export default Contact;

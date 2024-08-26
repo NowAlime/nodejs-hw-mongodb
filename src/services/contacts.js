@@ -22,14 +22,14 @@ export const getAllContacts = async ({
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
-  const [contactsCount, contacts] = await Promise.all([
-    ContactsCollection.find({ userId }).merge(contactsQuery).countDocuments(),
-    contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .exec(),
-  ]);
+  const contactsCountPromise = contactsQuery.countDocuments();
+  const contactsPromise = contactsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+    
+  const [contactsCount, contacts] = await Promise.all([contactsCountPromise, contactsPromise]);
 
   const paginationData = calculatePagination(contactsCount, perPage, page);
 
@@ -40,45 +40,54 @@ export const getAllContacts = async ({
 };
 
 export const getContactById = async (contactId, userId) => {
-  const contact = await ContactsCollection.findOne({ _id: contactId, userId });
-
-  return contact;
+  try {
+    const contact = await ContactsCollection.findOne({ _id: contactId, userId });
+    return contact;
+  } catch (error) {
+    console.error("Error fetching contact by ID:", error);
+    throw new Error("Failed to fetch contact");
+  }
 };
 
 export const deleteContact = async (contactId, userId) => {
-  const contact = await ContactsCollection.findOneAndDelete({
-    _id: contactId,
-    userId,
-  });
-  return contact;
+  try {
+    const contact = await ContactsCollection.findOneAndDelete({
+      _id: contactId,
+      userId,
+    });
+    return contact;
+  } catch (error) {
+    console.error("Error deleting contact:", error);
+    throw new Error("Failed to delete contact");
+  }
 };
 
-export const updateContact = async (
-  contactId,
-  payload,
-  userId,
-  options = {},
-) => {
-  const rawResult = await ContactsCollection.findByIdAndUpdate(
-    { _id: contactId, userId },
-    payload,
-    {
-      new: true,
-      includeResultMetadata: true,
-      ...options,
-    },
-  );
+export const updateContact = async (contactId, payload, userId, options = {}) => {
+  try {
+    const rawResult = await ContactsCollection.findByIdAndUpdate(
+      { _id: contactId, userId },
+      payload,
+      {
+        new: true,
+        includeResultMetadata: true,
+        ...options,
+      },
+    );
 
-  if (!rawResult || !rawResult.value) return null;
+    if (!rawResult || !rawResult.value) return null;
 
-  return {
-    contact: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-  };
+    return {
+      contact: rawResult.value,
+      isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    };
+  } catch (error) {
+    console.error("Error updating contact:", error);
+    throw new Error("Failed to update contact");
+  }
 };
+
 export const createContact = async (payload) => {
   try {
-   
     const { error } = validateContact.validate(payload);
     if (error) {
       throw new Error(`Validation error: ${error.details.map(detail => detail.message).join(', ')}`);
