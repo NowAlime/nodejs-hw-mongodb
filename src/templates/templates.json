@@ -1,0 +1,10 @@
+{
+    "welcomeEmail": {
+      "file": "welcome.html",
+      "description": "Template for welcome emails"
+    },
+    "passwordReset": {
+      "file": "password-reset.html",
+      "description": "Template for password reset emails"
+    }
+  }
