@@ -6,7 +6,11 @@ import env from './utils/env.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
+import { UPLOAD_DIR } from './constants/index.js';
+import dotenv from 'dotenv';
 
+
+dotenv.config();
 const PORT = Number(env('PORT', '5011'));
 
 export const setupServer = () => {
@@ -25,7 +29,7 @@ export const setupServer = () => {
     res.send('Welcome to the home page!');
   });
   app.use(router);
-
+  app.use('/uploads', express.static(UPLOAD_DIR));
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 
