@@ -1,4 +1,4 @@
-import { ContactsCollection } from '../validation/contacts.js';
+import { ContactsCollection, validateContact } from '../validation/contacts.js';
 import { SORT_ORDER } from '../constants/index.js';
 import calculatePagination from '../utils/calculatePagination.js';
 
@@ -76,12 +76,23 @@ export const updateContact = async (
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
 };
-
 export const createContact = async (payload) => {
-  const contact = new ContactsCollection({
-    ...payload,
-    userId: payload.userId,
-  });
-  await contact.save();
-  return contact;
+  try {
+   
+    const { error } = validateContact.validate(payload);
+    if (error) {
+      throw new Error(`Validation error: ${error.details.map(detail => detail.message).join(', ')}`);
+    }
+
+    const contact = new ContactsCollection({
+      ...payload,
+      userId: payload.userId,
+    });
+
+    await contact.save();
+    return contact;
+  } catch (error) {
+    console.error("Error creating contact:", error);
+    throw new Error("Failed to create contact");
+  }
 };
