@@ -14,8 +14,8 @@ dotenv.config();
 const PORT = Number(env('PORT', '5011'));
 
 export const setupServer = () => {
-  const app = express();
-
+  const app = express(); 
+  app.use(express.json());
   app.use(cors());
   app.use(cookieParser());
   app.use(
