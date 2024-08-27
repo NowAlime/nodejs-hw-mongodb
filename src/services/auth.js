@@ -21,6 +21,7 @@ export const registerUser = async (payload) => {
   });
 };
 
+
 export const loginUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
 
@@ -35,8 +36,8 @@ export const loginUser = async (payload) => {
 
   await SessionsCollection.deleteOne({ userId: user._id });
 
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
+  const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
   return await SessionsCollection.create({
     userId: user._id,
