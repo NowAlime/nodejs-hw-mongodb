@@ -32,6 +32,8 @@ router.post(
   upload.single('photo'),
   validateBody(validateContact),
   ctrlWrapper(createContactController),
+
+  
 );
 
 router.delete(
