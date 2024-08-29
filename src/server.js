@@ -34,7 +34,9 @@ const setupServer = () => {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
   });
-
+  app.get('/', (req, res) => {
+    res.send('Welcome to the home page!');
+  });
   app.use(routers);
 
   app.use('/uploads', express.static(UPLOAD_DIR));
