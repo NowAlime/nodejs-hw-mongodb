@@ -1,17 +1,16 @@
 import createHttpError from 'http-errors';
-import Joi from 'joi'; 
 
-export const validateBody = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      return next(createHttpError(400, `Validation error: ${error.details.map(detail => detail.message).join(', ')}`));
-    }
+const validateBody = (schema) => async (req, res, next) => {
+  try {
+    await schema.validateAsync(req.body, {
+      abortEarly: false,
+    });
     next();
-  };
+  } catch (err) {
+    const error = createHttpError(400, 'Bad Request', {
+      errors: err.details,
+    });
+    next(error);
+  }
 };
-
-export const resetPwdSchema = Joi.object({
-  email: Joi.string().email().required(),
-  newPassword: Joi.string().min(6).required(),
-});
+export default validateBody;

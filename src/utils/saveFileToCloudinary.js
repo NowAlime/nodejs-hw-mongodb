@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import env from '../utils/env.js';
+import env from './env.js';
 import fs from 'node:fs/promises';
 import { CLOUDINARY } from '../constants/index.js';
 
